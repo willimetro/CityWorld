@@ -23,6 +23,10 @@ public class City extends RealmObject {
     private String urlImgBackGround;
     private float starsPoints;
 
+    public City() {
+        
+    }
+
     public City(int id, String name, String desc, String urlImgBackGround, float starsPoints) {
         this.id = CityWorldApplication.CITY_ID.incrementAndGet();
         this.name = name;
