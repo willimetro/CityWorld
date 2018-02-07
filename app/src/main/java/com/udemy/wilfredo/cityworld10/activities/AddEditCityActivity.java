@@ -1,8 +1,9 @@
 package com.udemy.wilfredo.cityworld10.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,15 +28,22 @@ public class AddEditCityActivity extends AppCompatActivity {
     private EditText editTextCityDescription;
     private RatingBar ratingBarCity;
     private FloatingActionButton fabSaveCity;
+    private int idCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_city);
-
         //Se inicializan los objetos de la UI
         initUI();
-
+        //Se valida si es una edicion o una agregación
+        if(null != getIntent().getExtras()){
+            idCity = getIntent().getExtras().getInt("idCity");
+            bindFieldsEdit(idCity);
+            setTitle("Edit City");
+        } else {
+            setTitle("Create a New City");
+        }
         //Se agrega la acción de onClick al botón de previsualización
         buttonPreview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +63,28 @@ public class AddEditCityActivity extends AppCompatActivity {
                 addNewOrEditCity();
             }
         });
+    }
+
+    /**
+     * Método que permite cargar los campos si es que lo que requiere hacer el usuario es una
+     * edición de una cudad
+     * @param idCity parámetro que representa al id en la base de datos del elemento seleccionado
+     */
+    private void bindFieldsEdit(int idCity) {
+        realm = Realm.getDefaultInstance();
+        try {
+            City city = realm.where(City.class).equalTo("id", idCity).findFirst();
+            if(null != city) {
+                editTextCityName.setText(city.getName());
+                editTextCityDescription.setText(city.getDesc());
+                editTextCityImage.setText(city.getUrlImgBackGround());
+                ratingBarCity.setRating(city.getStarsPoints());
+                loadImageLinkForPreview(city.getUrlImgBackGround());
+            }
+        } finally {
+            realm.close();
+        }
+
     }
 
     /**
@@ -93,15 +123,25 @@ public class AddEditCityActivity extends AppCompatActivity {
             realm = Realm.getDefaultInstance();
             try {
                 City addEditCity = new City(nameCity, descriptionCity, imageCity, numberStarsCity);
+                if(idCity != 0) addEditCity.setId(idCity);
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(addEditCity);
                 realm.commitTransaction();
             } finally {
                 realm.close();
             }
+            goToMainActivity();
         } else {
             Toast.makeText(this, "Must complete all fields", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Método encargado de volver al activity principal cuando el usuario guardo los cambios
+     */
+    private void goToMainActivity() {
+        Intent goMainActivityIntent = new Intent(AddEditCityActivity.this,CityWorldActivity.class);
+        startActivity(goMainActivityIntent);
     }
 
     /**

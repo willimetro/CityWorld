@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:maxLines="3"
-            android:maxLength="100"
             android:textColor="@color/colorPrimaryText" />
 
         <LinearLayout

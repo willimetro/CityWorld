@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.udemy.wilfredo.cityworld10.R;
 import com.udemy.wilfredo.cityworld10.model.City;
 
@@ -53,15 +54,15 @@ public class CityWorldAdapter extends RecyclerView.Adapter<CityWorldAdapter.View
         return cities.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView nameCity;
-        public TextView descriptionCity;
-        public TextView starsCity;
-        public ImageView imageCity;
-        public Button btnDeleteCity;
+        private TextView nameCity;
+        private TextView descriptionCity;
+        private TextView starsCity;
+        private ImageView imageCity;
+        private Button btnDeleteCity;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
             nameCity = itemView.findViewById(R.id.textViewCityName);
             descriptionCity = itemView.findViewById(R.id.textViewCityDescription);
@@ -70,9 +71,34 @@ public class CityWorldAdapter extends RecyclerView.Adapter<CityWorldAdapter.View
             btnDeleteCity = itemView.findViewById(R.id.buttonDeleteCity);
         }
 
-        public void bind(City city, OnItemClickListener onItemClickListener,
-                         OnButtonClickListener onButtonClickListener){
+        /**
+         * Método que llena los elementos de la UI del cardview
+         * @param city propiedad que representa a una ciudad en la aplicación
+         * @param onItemClickListener propiedad que representa la accion de click en un item
+         * @param onButtonClickListener propiedad que representa la acción de click en el boton delete
+         */
+        private void bind(final City city, final OnItemClickListener onItemClickListener,
+                         final OnButtonClickListener onButtonClickListener) {
+            if (null != city) {
+                nameCity.setText(city.getName());
+                descriptionCity.setText(city.getDesc());
+                starsCity.setText(String.valueOf(city.getStarsPoints()));
+                Picasso.with(context).load(city.getUrlImgBackGround()).fit().into(imageCity);
 
+                btnDeleteCity.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onButtonClickListener.onButtonClick(city, getAdapterPosition());
+                    }
+                });
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onItemClickListener.onItemClick(city, getAdapterPosition());
+                    }
+                });
+            }
         }
     }
 
