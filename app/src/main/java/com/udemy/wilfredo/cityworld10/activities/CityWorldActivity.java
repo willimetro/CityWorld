@@ -24,6 +24,7 @@ import io.realm.RealmResults;
 public class CityWorldActivity extends AppCompatActivity implements View.OnClickListener, RealmChangeListener<RealmResults<City>> {
 
     private FloatingActionButton fabAddCity;
+    private RecyclerView recyclerCities;
     private CityWorldAdapter cityWorldAdapter;
     private RealmResults<City> cities;
 
@@ -33,11 +34,10 @@ public class CityWorldActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_world);
-
+        //Se obtienen las ciudades ya guardadas desde la base de datos
         realm = Realm.getDefaultInstance();
         cities = realm.where(City.class).findAll();
-
-
+        //Se crea el adapatador para el RecyclerView
         cityWorldAdapter = new CityWorldAdapter(R.layout.recycler_cardview_item, cities, new CityWorldAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(City city, int position) {
@@ -48,17 +48,14 @@ public class CityWorldActivity extends AppCompatActivity implements View.OnClick
         }, new CityWorldAdapter.OnButtonClickListener() {
             @Override
             public void onButtonClick(City city, int position) {
-                showAlertForRemovingCity("Delete","Are you sure you want to delete " + city.getName() + "?",position);
+                showAlertForRemovingCity("Are you sure you want to delete " + city.getName() + "?",position);
             }
         });
 
+        initUI();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        fabAddCity = findViewById(R.id.FABAddCity);
-        RecyclerView recyclerCities = findViewById(R.id.rvCityWorld);
         recyclerCities.setLayoutManager(mLayoutManager);
-
         recyclerCities.setAdapter(cityWorldAdapter);
-
         recyclerCities.setHasFixedSize(true);
         recyclerCities.setItemAnimator(new DefaultItemAnimator());
         recyclerCities.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -75,6 +72,13 @@ public class CityWorldActivity extends AppCompatActivity implements View.OnClick
         fabAddCity.setOnClickListener(this);
     }
 
+    /**
+     * Método que inicializa los elementos de la UI
+     */
+    private void initUI(){
+        recyclerCities = findViewById(R.id.rvCityWorld);
+        fabAddCity = findViewById(R.id.FABAddCity);
+    }
 
     /**
      * Se crea método para la acción onclick del botón agregar ciudad.
@@ -87,6 +91,10 @@ public class CityWorldActivity extends AppCompatActivity implements View.OnClick
         startActivity(intentAddCity);
     }
 
+    /**
+     * Método que permite la actualización de la pantalla cuando exista un cambio en la base de datos
+     * @param cities propiedad que representa el listado de ciudades
+     */
     @Override
     public void onChange(@NonNull RealmResults<City> cities) {
         cityWorldAdapter.notifyDataSetChanged();
@@ -104,14 +112,13 @@ public class CityWorldActivity extends AppCompatActivity implements View.OnClick
 
     /**
      * Método que muestra un alert de confirmación para el borrado de la ciudad
-     * @param title titulo del alert
      * @param message mensaje del alert
      * @param position posicion del listado de cardviews
      */
-    private void showAlertForRemovingCity(String title, String message, final int position) {
+    private void showAlertForRemovingCity(String message, final int position) {
 
         new AlertDialog.Builder(this)
-                .setTitle(title)
+                .setTitle("Delete")
                 .setMessage(message)
                 .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
 
