@@ -4,4 +4,6 @@
     <string name="hint_city_description">Description City</string>
     <string name="hint_city_image_link"><![CDATA[Image Link… (http://myimg.com)]]></string>
     <string name="image_content_description">Preview</string>
+    <string name="delete_city_button">DELETE</string>
+
 </resources>

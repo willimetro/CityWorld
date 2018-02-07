@@ -24,10 +24,10 @@ public class City extends RealmObject {
     private float starsPoints;
 
     public City() {
-        
+
     }
 
-    public City(int id, String name, String desc, String urlImgBackGround, float starsPoints) {
+    public City(String name, String desc, String urlImgBackGround, float starsPoints) {
         this.id = CityWorldApplication.CITY_ID.incrementAndGet();
         this.name = name;
         this.desc = desc;
