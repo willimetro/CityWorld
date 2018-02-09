@@ -141,6 +141,7 @@ public class AddEditCityActivity extends AppCompatActivity {
      */
     private void goToMainActivity() {
         Intent goMainActivityIntent = new Intent(AddEditCityActivity.this,CityWorldActivity.class);
+        goMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(goMainActivityIntent);
     }
 

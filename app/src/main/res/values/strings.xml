@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CityWorld1.0</string>
+    <string name="app_name">CityWorld</string>
     <string name="hint_city_name">Name City</string>
     <string name="hint_city_description">Description City</string>
     <string name="hint_city_image_link"><![CDATA[Image Link… (http://myimg.com)]]></string>
